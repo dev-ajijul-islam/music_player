@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       artist: "artist 2",
       songUrl: "https://samplelib.com/lib/preview/mp3/sample-6s.mp3",
       thumbnail:
-          "https://d3jmn01ri1fzgl.cloudfront.net/photoadking/webp_thumbnail/white-music-youtube-thumbnail-template-9bpbt9b8cd486b.webp",
+          "https://static.vecteezy.com/system/resources/thumbnails/024/295/482/small/colorful-music-background-illustration-ai-generative-free-photo.jpg",
       duration: Duration(seconds: 6),
     ),
     SongModel(
@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       artist: "artist 3",
       songUrl: "https://samplelib.com/lib/preview/mp3/sample-9s.mp3",
       thumbnail:
-          "https://d3jmn01ri1fzgl.cloudfront.net/photoadking/webp_thumbnail/white-music-youtube-thumbnail-template-9bpbt9b8cd486b.webp",
+          "https://www.shutterstock.com/image-illustration/music-themed-thumbnail-260nw-1125825584.jpg",
       duration: Duration(seconds: 9),
     ),
     SongModel(
@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
       artist: "artist 4",
       songUrl: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
       thumbnail:
-          "https://d3jmn01ri1fzgl.cloudfront.net/photoadking/webp_thumbnail/white-music-youtube-thumbnail-template-9bpbt9b8cd486b.webp",
+          "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/music-party-youtube-thumbnail-design-template-2bb96f44eede7efdb7df008bfd9d6611_screen.jpg",
       duration: Duration(seconds: 12),
     ),
     SongModel(
@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
       artist: "artist 5",
       songUrl: "https://samplelib.com/lib/preview/mp3/sample-15s.mp3",
       thumbnail:
-          "https://d3jmn01ri1fzgl.cloudfront.net/photoadking/webp_thumbnail/white-music-youtube-thumbnail-template-9bpbt9b8cd486b.webp",
+          "https://d3jmn01ri1fzgl.cloudfront.net/photoadking/webp_thumbnail/santa-fe-and-matrix-music-youtube-thumbnail-template-n25zqac19f9e2a.webp",
       duration: Duration(seconds: 19),
     ),
   ];
@@ -225,13 +225,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
 
-                                  // Play/Pause Button
                                   Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.white54,
+                                          color: ColorScheme.of(
+                                            context,
+                                          ).primary.withAlpha(200),
                                           blurRadius: 12,
                                           spreadRadius: 2,
                                         ),
@@ -297,6 +298,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              SizedBox(height: 20),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Song List",
+                  style: TextTheme.of(context).titleLarge,
+                ),
+              ),
+              SizedBox(height: 10),
               Expanded(
                 flex: 2,
                 child: ListView.separated(
