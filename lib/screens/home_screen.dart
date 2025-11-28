@@ -175,6 +175,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       currentSongIndex: currentSongIndex,
                       isPlaying: isPlaying,
+                      onPause: _pauseSong,
+                      onTileTap: (){
+                        setState(() {
+                          currentSongIndex = index;
+                        });
+                      },
                     );
                   },
                   padding: EdgeInsets.all(5),
