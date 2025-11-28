@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/model/song_model.dart';
@@ -62,13 +61,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Duration currentPosition = Duration.zero;
   Duration currentDuration = Duration.zero;
-  
 
   @override
   Widget build(BuildContext context) {
-    
     double maxSec = max(currentDuration.inSeconds.toDouble(), 1);
-    double currentSliderPos = currentPosition.inSeconds.toDouble().clamp(0, maxSec);
+    double currentSliderPos = currentPosition.inSeconds.toDouble().clamp(
+      0,
+      maxSec,
+    );
 
     return Scaffold(
       backgroundColor: ColorScheme.of(context).secondary,
@@ -79,96 +79,222 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Card(
-                clipBehavior: Clip.hardEdge,
-                child: Column(
-                  children: [
-                    Image.network(
-                      fit: BoxFit.fill,
-                      width: MediaQuery.of(context).size.width,
-                      height: 150,
-                      "https://d3jmn01ri1fzgl.cloudfront.net/photoadking/webp_thumbnail/white-music-youtube-thumbnail-template-9bpbt9b8cd486b.webp",
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      textAlign: TextAlign.center,
-                      songList[currentSongIndex].songName,
-                      style: TextTheme.of(context).titleLarge,
-                    ),
-                    Text(
-                      textAlign: TextAlign.center,
-                      songList[currentSongIndex].artist,
-                      style: TextTheme.of(context).titleMedium,
-                    ),
-                    Slider(
-                      inactiveColor: Colors.grey.shade400,
-                      value: currentSliderPos,
-                      min: 0,
-                      max: maxSec,
-                      onChanged: (value) {
-                        final position = Duration(seconds: value.toInt());
-                        player.seek(position);
-                      },
-
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 22),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _durationFormatter(currentPosition),
-                            style: TextTheme.of(context).titleMedium,
-                          ),
-                          Text(
-                            _durationFormatter(
-                              songList[currentSongIndex].duration,
-                            ),
-                            style: TextTheme.of(context).titleMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                            style: IconButton.styleFrom(),
-                            onPressed: _playPrevSong,
-                            icon: Icon(Icons.skip_previous),
-                          ),
-
-                          Visibility(
-                            visible: isLoading == false,
-                            replacement: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                isPlaying
-                                    ? _pauseSong()
-                                    : _playSong(songList[currentSongIndex]);
-                              },
-                              child: CircleAvatar(
-                                radius: 25,
-                                child: Icon(
-                                  isPlaying ? Icons.pause : Icons.play_arrow,
-                                  size: 35,
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          IconButton(
-                            onPressed: _playNextSong,
-                            icon: Icon(Icons.skip_next),
-                          ),
-                        ],
-                      ),
+              Container(
+                width: double.infinity,
+                height: 310,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 15,
+                      offset: Offset(0, 8),
                     ),
                   ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(
+                              songList[currentSongIndex].thumbnail,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Container(
+                        decoration: BoxDecoration(color: Colors.black54),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                SizedBox(height: 16),
+                                Text(
+                                  songList[currentSongIndex].songName,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall
+                                      ?.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  songList[currentSongIndex].artist,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(color: Colors.white70),
+                                ),
+                              ],
+                            ),
+
+                            // Progress Section
+                            Column(
+                              children: [
+                                SliderTheme(
+                                  data: SliderTheme.of(context).copyWith(
+                                    trackHeight: 4,
+                                    thumbShape: RoundSliderThumbShape(
+                                      enabledThumbRadius: 8,
+                                      disabledThumbRadius: 6,
+                                    ),
+                                    overlayShape: RoundSliderOverlayShape(
+                                      overlayRadius: 16,
+                                    ),
+                                    activeTrackColor: ColorScheme.of(
+                                      context,
+                                    ).primary,
+                                    inactiveTrackColor: Colors.white
+                                        .withOpacity(0.3),
+                                    thumbColor: Colors.white,
+                                  ),
+                                  child: Slider(
+                                    value: currentSliderPos,
+                                    min: 0,
+                                    max: maxSec,
+                                    onChanged: (value) {
+                                      final position = Duration(
+                                        seconds: value.toInt(),
+                                      );
+                                      player.seek(position);
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 4,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        _durationFormatter(currentPosition),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(color: Colors.white70),
+                                      ),
+                                      Text(
+                                        _durationFormatter(
+                                          songList[currentSongIndex].duration,
+                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(color: Colors.white70),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  // Previous Button
+                                  IconButton(
+                                    onPressed: _playPrevSong,
+                                    icon: Icon(Icons.skip_previous_rounded),
+                                    iconSize: 32,
+                                    color: Colors.white,
+                                    style: IconButton.styleFrom(
+                                      backgroundColor: Colors.white.withOpacity(
+                                        0.1,
+                                      ),
+                                      padding: EdgeInsets.all(12),
+                                    ),
+                                  ),
+
+                                  // Play/Pause Button
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.white54,
+                                          blurRadius: 12,
+                                          spreadRadius: 2,
+                                        ),
+                                      ],
+                                    ),
+                                    child: isLoading
+                                        ? Container(
+                                            width: 60,
+                                            height: 60,
+                                            padding: EdgeInsets.all(16),
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                    Colors.white,
+                                                  ),
+                                            ),
+                                          )
+                                        : IconButton(
+                                            onPressed: () {
+                                              isPlaying
+                                                  ? _pauseSong()
+                                                  : _playSong(
+                                                      songList[currentSongIndex],
+                                                    );
+                                            },
+                                            icon: Icon(
+                                              isPlaying
+                                                  ? Icons.pause_rounded
+                                                  : Icons.play_arrow_rounded,
+                                            ),
+                                            iconSize: 32,
+                                            color: Colors.white,
+                                            style: IconButton.styleFrom(
+                                              backgroundColor: ColorScheme.of(
+                                                context,
+                                              ).primary,
+                                              padding: EdgeInsets.all(16),
+                                            ),
+                                          ),
+                                  ),
+
+                                  // Next Button
+                                  IconButton(
+                                    onPressed: _playNextSong,
+                                    icon: Icon(Icons.skip_next_rounded),
+                                    iconSize: 32,
+                                    color: Colors.white,
+                                    style: IconButton.styleFrom(
+                                      backgroundColor: Colors.white.withOpacity(
+                                        0.1,
+                                      ),
+                                      padding: EdgeInsets.all(12),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Expanded(
@@ -188,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       currentSongIndex: currentSongIndex,
                       isPlaying: isPlaying,
                       onPause: _pauseSong,
-                      onTileTap: (){
+                      onTileTap: () {
                         setState(() {
                           currentSongIndex = index;
                         });
@@ -219,9 +345,11 @@ class _HomeScreenState extends State<HomeScreen> {
         currentPosition = event;
       }),
     );
-    player.onDurationChanged.listen((event) => setState(() {
-      currentDuration = event;
-    }),);
+    player.onDurationChanged.listen(
+      (event) => setState(() {
+        currentDuration = event;
+      }),
+    );
     player.onPlayerComplete.listen((event) => _playNextSong());
   }
 

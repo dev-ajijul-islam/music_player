@@ -23,28 +23,121 @@ class SongTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        onTileTap();
-      },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      tileColor: (currentSongIndex == songIndex)
-          ? ColorScheme.of(context).primary.withAlpha(50)
-          : Colors.white,
-      title: Text(songModel.songName),
-      subtitle: Text(songModel.artist, style: TextStyle(color: Colors.grey)),
-      leading: CircleAvatar(
-        backgroundColor: ColorScheme.of(context).primary.withAlpha(200),
-        child: Text("${songIndex + 1}"),
-      ),
-      trailing: IconButton(
-        onPressed: () {
-          (isPlaying && currentSongIndex == songIndex) ? onPause() : onPlay();
-        },
-        icon: Icon(
-          (currentSongIndex == songIndex && isPlaying)
-              ? Icons.pause
-              : Icons.play_arrow,
+    final bool isCurrentSong = currentSongIndex == songIndex;
+    final bool isCurrentlyPlaying = isPlaying && isCurrentSong;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTileTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: isCurrentSong
+                  ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
+              border: isCurrentSong
+                  ? Border.all(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                width: 1,
+              )
+                  : null,
+            ),
+            child: Row(
+              children: [
+                // Song Number/Playing Indicator
+                Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: isCurrentSong
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.grey.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: isCurrentlyPlaying
+                      ? Icon(
+                    Icons.equalizer_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  )
+                      : Text(
+                    "${songIndex + 1}",
+                    style: TextStyle(
+                      color: isCurrentSong ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 16),
+
+                // Song Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        songModel.songName,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: isCurrentSong
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.onSurface,
+                          fontWeight: isCurrentSong ? FontWeight.w600 : FontWeight.normal,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        songModel.artist,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: isCurrentSong
+                              ? Theme.of(context).colorScheme.primary.withOpacity(0.8)
+                              : Colors.grey,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                // Play/Pause Button
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: isCurrentSong
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.grey.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      isCurrentlyPlaying ? onPause() : onPlay();
+                    },
+                    icon: Icon(
+                      isCurrentlyPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                      color: isCurrentSong ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                      size: 20,
+                    ),
+                    padding: EdgeInsets.zero,
+                    style: IconButton.styleFrom(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
