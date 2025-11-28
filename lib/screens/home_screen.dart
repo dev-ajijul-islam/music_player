@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/model/song_model.dart';
@@ -58,10 +60,16 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   final AudioPlayer player = AudioPlayer();
 
+  Duration currentPosition = Duration.zero;
   Duration currentDuration = Duration.zero;
+  
 
   @override
   Widget build(BuildContext context) {
+    
+    double maxSec = max(currentDuration.inSeconds.toDouble(), 1);
+    double currentSliderPos = currentPosition.inSeconds.toDouble().clamp(0, maxSec);
+
     return Scaffold(
       backgroundColor: ColorScheme.of(context).secondary,
       body: SafeArea(
@@ -94,10 +102,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Slider(
                       inactiveColor: Colors.grey.shade400,
-                      value: 90,
+                      value: currentSliderPos,
                       min: 0,
-                      max: 100,
-                      onChanged: (value) {},
+                      max: maxSec,
+                      onChanged: (value) {
+                        final position = Duration(seconds: value.toInt());
+                        player.seek(position);
+                      },
+
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 22),
@@ -105,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            _durationFormatter(currentDuration),
+                            _durationFormatter(currentPosition),
                             style: TextTheme.of(context).titleMedium,
                           ),
                           Text(
@@ -204,9 +216,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     player.onPositionChanged.listen(
       (event) => setState(() {
-        currentDuration = event;
+        currentPosition = event;
       }),
     );
+    player.onDurationChanged.listen((event) => setState(() {
+      currentDuration = event;
+    }),);
     player.onPlayerComplete.listen((event) => _playNextSong());
   }
 
