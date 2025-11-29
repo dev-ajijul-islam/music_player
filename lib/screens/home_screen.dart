@@ -156,7 +156,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     thumbColor: Colors.white,
                                   ),
                                   child: Slider(
-                                    value: currentPosition.inSeconds.toDouble(),
+                                    value: currentPosition.inSeconds
+                                        .clamp(0, songList[currentSongIndex].duration.inSeconds)
+                                        .toDouble(),
                                     min: 0,
                                     max: songList[currentSongIndex]
                                         .duration
@@ -271,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                   ),
 
-                                  // Next Button
+
                                   IconButton(
                                     onPressed: _playNextSong,
                                     icon: Icon(Icons.skip_next_rounded),
@@ -339,6 +341,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _playSong(SongModel song) async {
     setState(() {
+      setState(() {
+        currentPosition = Duration.zero;
+      });
       isLoading = true;
       isPlaying = true;
     });
