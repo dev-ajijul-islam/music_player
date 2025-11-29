@@ -37,13 +37,12 @@ class SongTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: isCurrentSong
-                  ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                  ? Theme.of(context).colorScheme.primary.withAlpha(150)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
               border: isCurrentSong
                   ? Border.all(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                width: 1,
+                color: Theme.of(context).colorScheme.primary.withAlpha(300)
               )
                   : null,
             ),
@@ -57,7 +56,7 @@ class SongTile extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isCurrentSong
                         ? Theme.of(context).colorScheme.primary
-                        : Colors.grey.withOpacity(0.2),
+                        : Colors.grey.withAlpha(200),
                     shape: BoxShape.circle,
                   ),
                   child: isCurrentlyPlaying
@@ -98,7 +97,7 @@ class SongTile extends StatelessWidget {
                         songModel.artist,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: isCurrentSong
-                              ? Theme.of(context).colorScheme.primary.withOpacity(0.8)
+                              ? Theme.of(context).colorScheme.primary.withAlpha(800)
                               : Colors.grey,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -117,7 +116,7 @@ class SongTile extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isCurrentSong
                         ? Theme.of(context).colorScheme.primary
-                        : Colors.grey.withOpacity(0.1),
+                        : Colors.grey.withAlpha(100),
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
