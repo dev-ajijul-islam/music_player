@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/model/song_model.dart';
@@ -60,16 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final AudioPlayer player = AudioPlayer();
 
   Duration currentPosition = Duration.zero;
-  Duration currentDuration = Duration.zero;
 
   @override
   Widget build(BuildContext context) {
-    double maxSec = max(currentDuration.inSeconds.toDouble(), 1);
-    double currentSliderPos = currentPosition.inSeconds.toDouble().clamp(
-      0,
-      maxSec,
-    );
-
     return Scaffold(
       backgroundColor: ColorScheme.of(context).secondary,
       body: SafeArea(
@@ -86,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withAlpha(300),
                       blurRadius: 15,
                       offset: Offset(0, 8),
                     ),
@@ -158,14 +150,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                     activeTrackColor: ColorScheme.of(
                                       context,
                                     ).primary,
-                                    inactiveTrackColor: Colors.white
-                                        .withOpacity(0.3),
+                                    inactiveTrackColor: Colors.white.withAlpha(
+                                      300,
+                                    ),
                                     thumbColor: Colors.white,
                                   ),
                                   child: Slider(
-                                    value: currentSliderPos,
+                                    value: currentPosition.inSeconds.toDouble(),
                                     min: 0,
-                                    max: maxSec,
+                                    max: songList[currentSongIndex]
+                                        .duration
+                                        .inSeconds
+                                        .toDouble(),
                                     onChanged: (value) {
                                       final position = Duration(
                                         seconds: value.toInt(),
@@ -218,8 +214,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     iconSize: 32,
                                     color: Colors.white,
                                     style: IconButton.styleFrom(
-                                      backgroundColor: Colors.white.withOpacity(
-                                        0.1,
+                                      backgroundColor: Colors.white.withAlpha(
+                                        100,
                                       ),
                                       padding: EdgeInsets.all(12),
                                     ),
@@ -282,8 +278,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     iconSize: 32,
                                     color: Colors.white,
                                     style: IconButton.styleFrom(
-                                      backgroundColor: Colors.white.withOpacity(
-                                        0.1,
+                                      backgroundColor: Colors.white.withAlpha(
+                                        100,
                                       ),
                                       padding: EdgeInsets.all(12),
                                     ),
@@ -353,11 +349,6 @@ class _HomeScreenState extends State<HomeScreen> {
     player.onPositionChanged.listen(
       (event) => setState(() {
         currentPosition = event;
-      }),
-    );
-    player.onDurationChanged.listen(
-      (event) => setState(() {
-        currentDuration = event;
       }),
     );
     player.onPlayerComplete.listen((event) => _playNextSong());
