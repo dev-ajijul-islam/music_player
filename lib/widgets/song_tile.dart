@@ -27,9 +27,14 @@ class SongTile extends StatelessWidget {
     final bool isCurrentlyPlaying = isPlaying && isCurrentSong;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      clipBehavior : Clip.hardEdge,
+       margin: const EdgeInsets.symmetric(vertical: 4,),
+      decoration : BoxDecoration(
+        borderRadius : BorderRadius.circular(12),
+      ),
       child: Material(
-        color: Colors.transparent,
+
+        color: Colors.white,
         child: InkWell(
           onTap: onTileTap,
           borderRadius: BorderRadius.circular(12),
@@ -48,7 +53,7 @@ class SongTile extends StatelessWidget {
             ),
             child: Row(
               children: [
-                // Song Number/Playing Indicator
+
                 Container(
                   width: 40,
                   height: 40,
@@ -75,8 +80,6 @@ class SongTile extends StatelessWidget {
                 ),
 
                 const SizedBox(width: 16),
-
-                // Song Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +100,7 @@ class SongTile extends StatelessWidget {
                         songModel.artist,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: isCurrentSong
-                              ? Theme.of(context).colorScheme.primary.withAlpha(800)
+                              ? Theme.of(context).colorScheme.primary.withAlpha(185)
                               : Colors.grey,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -109,7 +112,6 @@ class SongTile extends StatelessWidget {
 
                 const SizedBox(width: 12),
 
-                // Play/Pause Button
                 Container(
                   width: 40,
                   height: 40,

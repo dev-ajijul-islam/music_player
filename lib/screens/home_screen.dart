@@ -362,13 +362,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _playNextSong() async {
-    _pauseSong();
+    setState((){
+      currentPosition = Duration(seconds : 0);
+    });
     currentSongIndex = (currentSongIndex + 1) % songList.length;
     _playSong(songList[currentSongIndex]);
   }
 
   Future<void> _playPrevSong() async {
-    _pauseSong();
+    setState((){
+      currentPosition = Duration(seconds : 0);
+    });
+
     currentSongIndex =
         (currentSongIndex - 1 + songList.length) % songList.length;
     _playSong(songList[currentSongIndex]);
